@@ -1,0 +1,14 @@
+[user]
+	name = ain
+	email = ain@dummy.com
+[color]
+	ui = true
+[alias]
+	l = log --decorate --oneline
+	ls = log --decorate --oneline --stat
+	lg = log --decorate --oneline --graph
+	co = checkout
+	ci = commit
+	st = status
+	d  = status 
+	br = branch
