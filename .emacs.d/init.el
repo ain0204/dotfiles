@@ -1,12 +1,26 @@
 ;;---------------------------------------
 ;;
-;; パッケージ関連
-;; package-refresh-contents でパッケージ情報を更新
+;; El-Get
 ;;---------------------------------------
-(require 'package)
-(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
-(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
-(package-initialize) ;; 初期化
+(when load-file-name
+  (setq user-emacs-directory (file-name-directory load-file-name)))
+
+(add-to-list 'load-path (locate-user-emacs-file "el-get/el-get"))
+(unless (require 'el-get nil 'noerror)
+  (with-current-buffer
+      (url-retrieve-synchronously
+       "https://raw.githubusercontent.com/dimitri/el-get/master/el-get-install.el")
+    (goto-char (point-max))
+    (eval-print-last-sexp)))
+
+;; packages
+(el-get-bundle helm)
+(el-get-bundle auto-complete)
+;;(el-get-bundle nayn-mode)
+(el-get-bundle google-translate)
+(el-get-bundle neotree)
+(el-get-bundle popwin)
+(el-get-bundle open-junk-file)
 
 
 ;;---------------------------------------
@@ -17,7 +31,7 @@
 ;; 本来、C-mにはnewlineが割り当てられている
 (define-key global-map (kbd "C-m") 'newline-and-indent)
 
-;; "C-h"にbackspaceを割り当てる
+;; "C-h"にbackspaceを割jり当てる
 (define-key global-map (kbd "C-h") 'delete-backward-char)
 
 ;; "C-c l"に折り返しトグルを割り当てる
@@ -62,13 +76,21 @@
 (setq initial-scratch-message
       ";; Godspeed you!")
 
+;; backupファイルの保存先
+(add-to-list 'backup-directory-alist
+             (cons (expand-file-name "~/") (expand-file-name "~/.emacs.d/.trash/")))
+
+;; 変更のあったファイルの自動再読み込み
+(global-auto-revert-mode 1)
+
+;; emacs クリップボード
+(setq x-select-enable-clipboard t)
 
 ;; Color
 (load-theme 'tango-dark t)
 ;; (set-background-color "Black")
 ;; (set-foreground-color "LightGray")
 ;; (set-cursor-color "Gray")
-
 
 ;; ---
 ;; 
@@ -132,3 +154,120 @@
 ;; !!caution!! mozcに上書きされちゃうのでmozcより後で
 ;; ---
 (prefer-coding-system 'utf-8)
+
+
+;; ---
+;;
+;; auto-complete
+;; ---
+(require 'auto-complete-config)
+(ac-config-default)
+(ac-set-trigger-key "C-TAB") ;; トリガーキー
+(setq ac-use-menu-map t) ;; 補完メニュー表示時にC-n/C-pで補完候補選択
+(setq ac-use-fuzzy t) ;; 曖昧マッチ
+
+
+;; ---
+;;
+;; helm
+;; ---
+(require 'helm-config)
+(helm-mode 1)
+(global-set-key (kbd "M-x") 'helm-M-x)
+(global-set-key (kbd "C-;") 'helm-for-files)
+(global-set-key (kbd "C-:") 'helm-for-files) ;; 環境によってはC-;が持っていかれているので
+(global-set-key (kbd "C-c y") 'helm-show-kill-ring)
+(global-set-key (kbd "C-x b") 'helm-buffers-list)
+(global-set-key (kbd "C-x C-f") 'helm-find-files)
+;; "C-h"にbackspaceを割り当てる
+(define-key key-translation-map (kbd "C-h") (kbd "<DEL>"))
+
+
+;; ---
+;;
+;; nyan-mode
+;; ---
+;; (require 'nyan-mode)
+;; (nyan-mode)
+;; (nyan-start-animation) ;; 動くぞ！ 
+
+
+;; ---
+;;
+;; open-junk-file
+;; ---
+(require 'open-junk-file)
+(setq open-junk-file-format "~/Documents/junk/%Y-%m%d.org")
+(global-set-key "\C-xj" 'open-junk-file)
+
+
+;; ---
+;;
+;; popwin
+;; 設定途中 C-x C-jに適用したい
+;; ---
+(require 'popwin)
+(popwin-mode 1)
+
+
+;; ---
+;;
+;; NeoTree
+;; C: ルートディレクトリの変更
+;; c, +, p: ファイル作成
+;; d: ファイル削除
+;; r: ファイル名変更
+;; e: ディレクトリを開く
+;; ---
+(require 'neotree)
+(global-set-key [f8] 'neotree-toggle)
+
+;; 隠しファイルをデフォルトで表示
+(setq neo-show-hidden-files t)
+
+;; delete-other-window で neotree ウィンドウを消さない
+(setq neo-persist-show t)
+
+;; キーバインドをシンプルにする
+(setq neo-keymap-style 'concise)
+
+;; neotree ウィンドウを表示する毎に current file のあるディレクトリを表示する
+(setq neo-smart-open t)
+
+
+;; ---
+;;
+;; 翻訳
+;; ---
+(require 'google-translate)
+
+(defvar google-translate-english-chars "[:ascii:]"
+  "これらの文字が含まれているときは英語とみなす")
+(defun google-translate-enja-or-jaen (&optional string)
+  "regionか、現在のセンテンスを言語自動判別でGoogle翻訳する。"
+  (interactive)
+  (setq string
+        (cond ((stringp string) string)
+              (current-prefix-arg
+               (read-string "Google Translate: "))
+              ((use-region-p)
+               (buffer-substring (region-beginning) (region-end)))
+              (t
+               (save-excursion
+                 (let (s)
+                   (forward-char 1)
+                   (backward-sentence)
+                   (setq s (point))
+                   (forward-sentence)
+                   (buffer-substring s (point)))))))
+  (let* ((asciip (string-match
+                  (format "\\`[%s]+\\'" google-translate-english-chars)
+                  string)))
+    (run-at-time 0.1 nil 'deactivate-mark)
+    (google-translate-translate
+     (if asciip "en" "ja")
+     (if asciip "ja" "en")
+     string)))
+(global-set-key (kbd "C-c t") 'google-translate-enja-or-jaen)
+
+
