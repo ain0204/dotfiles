@@ -1,3 +1,7 @@
 # emacs
 *~
 \#*\#
+
+.python-environments/
+ac-comphist.dat
+recentf
