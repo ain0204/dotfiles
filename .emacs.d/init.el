@@ -16,11 +16,13 @@
 ;; packages
 (el-get-bundle helm)
 (el-get-bundle auto-complete)
-;;(el-get-bundle nayn-mode)
+(el-get-bundle nyan-mode)
 (el-get-bundle google-translate)
 (el-get-bundle neotree)
 (el-get-bundle popwin)
 (el-get-bundle open-junk-file)
+(el-get-bundle jedi)
+(el-get-bundle flycheck)
 
 
 ;;---------------------------------------
@@ -86,11 +88,15 @@
 ;; emacs クリップボード
 (setq x-select-enable-clipboard t)
 
+;; 警告音を消す
+(setq ring-bell-function 'ignore)
+
 ;; Color
 (load-theme 'tango-dark t)
 ;; (set-background-color "Black")
 ;; (set-foreground-color "LightGray")
 ;; (set-cursor-color "Gray")
+
 
 ;; ---
 ;; 
@@ -128,7 +134,7 @@
 ;; ---
 (require 'mozc)
 
-(set-language-environment "Japanese")
+;;(set-language-environment "Japanese")
 (setq default-input-method "japanese-mozc")
 ;; ミニバッファに表示する
 (setq mozc-candidate-style 'echo-area)
@@ -187,9 +193,9 @@
 ;;
 ;; nyan-mode
 ;; ---
-;; (require 'nyan-mode)
-;; (nyan-mode)
-;; (nyan-start-animation) ;; 動くぞ！ 
+(require 'nyan-mode)
+(nyan-mode)
+(nyan-start-animation) ;; 動くぞ！ 
 
 
 ;; ---
@@ -271,3 +277,17 @@
 (global-set-key (kbd "C-c t") 'google-translate-enja-or-jaen)
 
 
+;; ---
+;;
+;; jebi
+;; sudo pacman -S python-virtualenv
+;; M-x jedi:install-server
+;; ---
+(add-hook 'python-mode-hook 'jedi:setup)
+(setq jedi:complete-on-dot t)
+
+;; ---
+;;
+;; flycheck
+;; ---
+(add-hook 'after-init-hook #'global-flycheck-mode)
