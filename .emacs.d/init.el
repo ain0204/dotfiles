@@ -23,7 +23,8 @@
 (el-get-bundle open-junk-file)
 (el-get-bundle jedi)
 (el-get-bundle flycheck)
-
+;;(el-get-bundle drill-instructor)
+(el-get-bundle redo+)
 
 ;;---------------------------------------
 ;;
@@ -62,7 +63,7 @@
 ;; 行番号表示
 (global-linum-mode t)
 
-;; タイトルバーにファイルのフルパスを表示
+;; タイトルバーにファイルのフルパスを表示 
 (setq frame-title-format "emacs : %f")
 
 ;; スタートアップ非表示
@@ -204,7 +205,15 @@
 ;; ---
 (require 'open-junk-file)
 (setq open-junk-file-format "~/Documents/junk/%Y-%m%d.org")
-(global-set-key "\C-xj" 'open-junk-file)
+
+(defun my-open-junk-file()
+  "junk file の保存先があるか確認してからopen-junk-fileする"
+  (interactive)
+  (if (file-exists-p "~/Documents/junk")
+      (open-junk-file)
+    (message "Junk file error: Please make dir ~/Documents/junk")))
+
+(global-set-key "\C-xj" 'my-open-junk-file)
 
 
 ;; ---
@@ -286,8 +295,18 @@
 (add-hook 'python-mode-hook 'jedi:setup)
 (setq jedi:complete-on-dot t)
 
+
 ;; ---
 ;;
 ;; flycheck
 ;; ---
 (add-hook 'after-init-hook #'global-flycheck-mode)
+
+
+;; ---
+;;
+;; redo+
+;; ---
+(when (require 'redo+ nil t)
+  (global-set-key (kbd "C-.") 'redo)
+  )
