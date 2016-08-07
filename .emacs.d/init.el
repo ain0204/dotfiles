@@ -63,6 +63,7 @@
 
 ;; 行番号表示
 (global-linum-mode t)
+(setq linum-format "%3d ")
 
 ;; タイトルバーにファイルのフルパスを表示 
 (setq frame-title-format "emacs : %f")
