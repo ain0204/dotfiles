@@ -99,6 +99,10 @@
 ;; (set-cursor-color "Gray")
 
 
+;; 対応する括弧をハイライト
+(show-paren-mode t)
+(setq show-paren-style 'mixed)
+
 ;; ---
 ;; 
 ;; 背景透過を切り替える関数
