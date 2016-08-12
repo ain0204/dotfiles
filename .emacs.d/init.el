@@ -26,6 +26,7 @@
 ;;(el-get-bundle drill-instructor)
 (el-get-bundle redo+)
 (el-get-bundle highlight-symbol)
+;;(el-get-bundle )
 
 ;;---------------------------------------
 ;;
@@ -96,9 +97,6 @@
 
 ;; Color
 (load-theme 'tango-dark t)
-;; (set-background-color "Black")
-;; (set-foreground-color "LightGray")
-;; (set-cursor-color "Gray")
 
 
 ;; 対応する括弧をハイライト
@@ -116,11 +114,15 @@
   (interactive)
   (if (equal alpha-on-flag t)
       (progn
+	(load-theme 'tango-dark t)
 	(set-frame-parameter nil 'alpha 100)
 	(setq alpha-on-flag nil)
 	(message "alpha-off"))
     (progn
       (set-frame-parameter nil 'alpha 80)
+      (set-background-color "Black")
+      (set-foreground-color "LightGray")
+      (set-cursor-color "Gray")
       (setq alpha-on-flag t)
       (message "alpha-on"))))
 
@@ -150,6 +152,7 @@
 (setq ibus-cursor-color '("limegreen" "red" "red"))
 
 (global-set-key (kbd "<zenkaku-hankaku>") 'toggle-input-method)
+
 (add-hook 'mozc-mode-hook
 (lambda()
   (define-key mozc-mode-map (kbd "<zenkaku-hankaku>") 'toggle-input-method)))
