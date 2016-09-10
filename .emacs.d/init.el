@@ -23,9 +23,22 @@
 (el-get-bundle open-junk-file)
 (el-get-bundle jedi)
 (el-get-bundle flycheck)
-;;(el-get-bundle drill-instructor)
 (el-get-bundle redo+)
 (el-get-bundle highlight-symbol)
+;; 検索件数を表示
+(el-get-bundle anzu)
+;; undoやyankした後にどこが変わったかをハイライトする
+(el-get-bundle volatile-highlights)
+;; 行番号をいい感じに表示
+(el-get-bundle elpa:hlinum)
+(el-get-bundle smartparens)
+
+(el-get-bundle haskell-mode)
+;;(el-get-bundle drill-instructor)
+;; color-themes
+(el-get-bundle atom-dark-theme)
+(el-get-bundle monokai-theme)
+;; (el-get-bundle emacs-fish)
 ;;(el-get-bundle )
 
 ;;---------------------------------------
@@ -62,10 +75,6 @@
 (line-number-mode t)
 (column-number-mode t)
 
-;; 行番号表示
-(global-linum-mode t)
-(setq linum-format "%3d ")
-
 ;; タイトルバーにファイルのフルパスを表示 
 (setq frame-title-format "emacs : %f")
 
@@ -96,8 +105,7 @@
 (setq ring-bell-function 'ignore)
 
 ;; Color
-(load-theme 'tango-dark t)
-
+(load-theme 'monokai t)
 
 ;; 対応する括弧をハイライト
 (show-paren-mode t)
@@ -114,7 +122,7 @@
   (interactive)
   (if (equal alpha-on-flag t)
       (progn
-	(load-theme 'tango-dark t)
+	(load-theme 'monokai t)
 	(set-frame-parameter nil 'alpha 100)
 	(setq alpha-on-flag nil)
 	(message "alpha-off"))
@@ -335,3 +343,130 @@
 (global-set-key [(control f3)] 'highlight-symbol)
 ;; シンボル置換
 (global-set-key [(meta f3)] 'highlight-symbol-query-replace)
+
+
+;; ---
+;;
+;; anzu
+;; http://qiita.com/syohex/items/56cf3b7f7d9943f7a7ba
+;; 文字列検索時にHit件数を表示する
+;; ---
+(global-anzu-mode +1)
+
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(anzu-deactivate-region t)
+ '(anzu-mode-lighter "")
+ '(anzu-search-threshold 1000)
+ '(custom-safe-themes
+   (quote
+    ("fe230d2861a13bb969b5cdf45df1396385250cc0b7933b8ab9a2f9339b455f5c" "03ea866815fe82c4736611acafef3c90519d15cd3d465d8f146ebfa3a293b663" default))))
+
+
+;; ---
+;;
+;; volatile-highlights
+;; ---
+(require 'volatile-highlights)
+(volatile-highlights-mode t)
+
+
+;; ---
+;;
+;; hlinum
+;; いい感じに行数を表示する
+;; ---
+(require 'hlinum)
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(linum-highlight-face ((t (:foreground "black" :background "#888888")))))
+(hlinum-activate)
+(setq linum-format "%3d ")
+(global-linum-mode t)
+
+
+;; ---
+;;
+;; 括弧補完
+;; ---
+(require 'smartparens-config)
+(smartparens-global-mode t)
+
+
+;; ---
+;;
+;; haskell-mode
+;; ---
+(autoload 'haskell-mode "haskell-mode" nil t)
+(autoload 'haskell-cabal "haskell-cabal" nil t)
+ 
+(add-to-list 'auto-mode-alist '("\\.hs$" . haskell-mode))
+(add-to-list 'auto-mode-alist '("\\.lhs$" . literate-haskell-mode))
+(add-to-list 'auto-mode-alist '("\\.cabal\\'" . haskell-cabal-mode))
+
+;; indent の有効.
+(add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
+(add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
+(add-hook 'haskell-mode-hook 'font-lock-mode)
+(add-hook 'haskell-mode-hook 'imenu-add-menubar-index)
+
+(add-to-list 'interpreter-mode-alist '("runghc" . haskell-mode))
+(add-to-list 'interpreter-mode-alist '("runhaskell" . haskell-mode))
+
+
+;; ---
+;;
+;; C++ まわりの設定
+;; ---
+;;
+;;ヘッダファイル(.h)をc++モードで開く
+(setq auto-mode-alist
+      (append '(("\\.h$" . c++-mode))
+              auto-mode-alist))
+
+
+;; ---
+;; 
+;; ファイル作成時にテンプレートを使用
+;; Ref: http://www.02.246.ne.jp/~torutk/cxx/emacs/mode_extension.html
+;; Ref: http://d.hatena.ne.jp/higepon/20080731/1217491155
+;; ---
+(require 'autoinsert)
+;; テンプレート格納用ディレクトリ
+(setq auto-insert-directory "~/.emacs.d/insert/")
+;; ファイル拡張子とテンプレートの対応
+(setq auto-insert-alist
+      (append '(
+               ("\\.cpp$" . ["template.cpp" my-template])
+               ("\\.h$" . ["template.h" my-template])
+	       ("\\.py$" . ["template.py" my-template])
+	       ("\\.tex$" . ["template.tex" my-template])
+              ) auto-insert-alist))
+(add-hook 'find-file-hooks 'auto-insert)
+
+
+(require 'cl)
+
+(defvar template-replacements-alists
+  '(("%file%"             . (lambda () (file-name-nondirectory (buffer-file-name))))
+    ("%file-without-ext%" . (lambda () (file-name-sans-extension (file-name-nondirectory (buffer-file-name)))))
+    ("%include-guard%"    . (lambda () (format "__%s_H_INCLUDED__" (upcase (file-name-sans-extension (file-name-nondirectory buffer-file-name))))))))
+  
+
+(defun my-template ()
+  (time-stamp)
+  (mapc #'(lambda(c)
+            (progn
+              (goto-char (point-min))
+              (replace-string (car c) (funcall (cdr c)) nil)))
+        template-replacements-alists)
+  (goto-char (point-max))
+  (message "done."))
+
+(add-hook 'find-file-not-found-hooks 'auto-insert)
