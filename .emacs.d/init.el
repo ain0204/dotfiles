@@ -38,32 +38,16 @@
 ;; color-themes
 (el-get-bundle atom-dark-theme)
 (el-get-bundle monokai-theme)
-;; (el-get-bundle emacs-fish)
+(el-get-bundle init-loader)
 ;;(el-get-bundle )
 
-;;---------------------------------------
+;; ---
 ;;
-;; キーバインド集
-;;---------------------------------------
-;; C-mにnewline-and-indentを割り当てる
-;; 本来、C-mにはnewlineが割り当てられている
-(define-key global-map (kbd "C-m") 'newline-and-indent)
-
-;; "C-h"にbackspaceを割jり当てる
-(define-key global-map (kbd "C-h") 'delete-backward-char)
-
-;; "C-c l"に折り返しトグルを割り当てる
-(define-key global-map (kbd "C-c l") 'toggle-truncate-lines)
-
-;; "C-t"でウィンドウを切り替える
-;; 初期値はtranspose-chars（入れ替えるやつ）が割り当てられてる。
-(define-key global-map (kbd "C-t") 'other-window)
-
-;; "C-c C-r" に置換を割り当てる
-(define-key global-map (kbd "C-c C-r") 'replace-string)
-
-;; nnで「ん」が入力できるようする設定。
-(setq quail-japanese-use-double-n t)
+;; init-loader
+;; ---
+(require 'init-loader)
+(setq init-loader-show-log-after-init 'error-only)
+(init-loader-load "~/.emacs.d/inits/")
 
 
 ;;---------------------------------------
@@ -182,33 +166,6 @@
 
 ;; ---
 ;;
-;; auto-complete
-;; ---
-(require 'auto-complete-config)
-(ac-config-default)
-(ac-set-trigger-key "C-TAB") ;; トリガーキー
-(setq ac-use-menu-map t) ;; 補完メニュー表示時にC-n/C-pで補完候補選択
-(setq ac-use-fuzzy t) ;; 曖昧マッチ
-
-
-;; ---
-;;
-;; helm
-;; ---
-(require 'helm-config)
-(helm-mode 1)
-(global-set-key (kbd "M-x") 'helm-M-x)
-(global-set-key (kbd "C-;") 'helm-for-files)
-(global-set-key (kbd "C-:") 'helm-for-files) ;; 環境によってはC-;が持っていかれているので
-(global-set-key (kbd "C-c y") 'helm-show-kill-ring)
-(global-set-key (kbd "C-x b") 'helm-buffers-list)
-(global-set-key (kbd "C-x C-f") 'helm-find-files)
-;; "C-h"にbackspaceを割り当てる
-(define-key key-translation-map (kbd "C-h") (kbd "<DEL>"))
-
-
-;; ---
-;;
 ;; nyan-mode
 ;; ---
 (require 'nyan-mode)
@@ -218,89 +175,11 @@
 
 ;; ---
 ;;
-;; open-junk-file
-;; ---
-(require 'open-junk-file)
-(setq open-junk-file-format "~/Documents/junk/%Y-%m%d.org")
-
-(defun my-open-junk-file()
-  "junk file の保存先があるか確認してからopen-junk-fileする"
-  (interactive)
-  (if (file-exists-p "~/Documents/junk")
-      (open-junk-file)
-    (message "Junk file error: Please make dir ~/Documents/junk")))
-
-(global-set-key "\C-xj" 'my-open-junk-file)
-
-
-;; ---
-;;
 ;; popwin
 ;; 設定途中 C-x C-jに適用したい
 ;; ---
 (require 'popwin)
 (popwin-mode 1)
-
-
-;; ---
-;;
-;; NeoTree
-;; C: ルートディレクトリの変更
-;; c, +, p: ファイル作成
-;; d: ファイル削除
-;; r: ファイル名変更
-;; e: ディレクトリを開く
-;; ---
-(require 'neotree)
-(global-set-key [f8] 'neotree-toggle)
-
-;; 隠しファイルをデフォルトで表示
-(setq neo-show-hidden-files t)
-
-;; delete-other-window で neotree ウィンドウを消さない
-(setq neo-persist-show t)
-
-;; キーバインドをシンプルにする
-(setq neo-keymap-style 'concise)
-
-;; neotree ウィンドウを表示する毎に current file のあるディレクトリを表示する
-(setq neo-smart-open t)
-
-
-;; ---
-;;
-;; 翻訳
-;; ---
-(require 'google-translate)
-
-(defvar google-translate-english-chars "[:ascii:]"
-  "これらの文字が含まれているときは英語とみなす")
-(defun google-translate-enja-or-jaen (&optional string)
-  "regionか、現在のセンテンスを言語自動判別でGoogle翻訳する。"
-  (interactive)
-  (setq string
-        (cond ((stringp string) string)
-              (current-prefix-arg
-               (read-string "Google Translate: "))
-              ((use-region-p)
-               (buffer-substring (region-beginning) (region-end)))
-              (t
-               (save-excursion
-                 (let (s)
-                   (forward-char 1)
-                   (backward-sentence)
-                   (setq s (point))
-                   (forward-sentence)
-                   (buffer-substring s (point)))))))
-  (let* ((asciip (string-match
-                  (format "\\`[%s]+\\'" google-translate-english-chars)
-                  string)))
-    (run-at-time 0.1 nil 'deactivate-mark)
-    (google-translate-translate
-     (if asciip "en" "ja")
-     (if asciip "ja" "en")
-     string)))
-(global-set-key (kbd "C-c t") 'google-translate-enja-or-jaen)
 
 
 ;; ---
@@ -347,48 +226,10 @@
 
 ;; ---
 ;;
-;; anzu
-;; http://qiita.com/syohex/items/56cf3b7f7d9943f7a7ba
-;; 文字列検索時にHit件数を表示する
-;; ---
-(global-anzu-mode +1)
-
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(anzu-deactivate-region t)
- '(anzu-mode-lighter "")
- '(anzu-search-threshold 1000)
- '(custom-safe-themes
-   (quote
-    ("fe230d2861a13bb969b5cdf45df1396385250cc0b7933b8ab9a2f9339b455f5c" "03ea866815fe82c4736611acafef3c90519d15cd3d465d8f146ebfa3a293b663" default))))
-
-
-;; ---
-;;
 ;; volatile-highlights
 ;; ---
 (require 'volatile-highlights)
 (volatile-highlights-mode t)
-
-
-;; ---
-;;
-;; hlinum
-;; いい感じに行数を表示する
-;; ---
-(require 'hlinum)
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(linum-highlight-face ((t (:foreground "black" :background "#888888")))))
-(hlinum-activate)
-(setq linum-format "%3d ")
-(global-linum-mode t)
 
 
 ;; ---
@@ -401,27 +242,6 @@
 
 ;; ---
 ;;
-;; haskell-mode
-;; ---
-(autoload 'haskell-mode "haskell-mode" nil t)
-(autoload 'haskell-cabal "haskell-cabal" nil t)
- 
-(add-to-list 'auto-mode-alist '("\\.hs$" . haskell-mode))
-(add-to-list 'auto-mode-alist '("\\.lhs$" . literate-haskell-mode))
-(add-to-list 'auto-mode-alist '("\\.cabal\\'" . haskell-cabal-mode))
-
-;; indent の有効.
-(add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
-(add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
-(add-hook 'haskell-mode-hook 'font-lock-mode)
-(add-hook 'haskell-mode-hook 'imenu-add-menubar-index)
-
-(add-to-list 'interpreter-mode-alist '("runghc" . haskell-mode))
-(add-to-list 'interpreter-mode-alist '("runhaskell" . haskell-mode))
-
-
-;; ---
-;;
 ;; C++ まわりの設定
 ;; ---
 ;;
@@ -429,44 +249,3 @@
 (setq auto-mode-alist
       (append '(("\\.h$" . c++-mode))
               auto-mode-alist))
-
-
-;; ---
-;; 
-;; ファイル作成時にテンプレートを使用
-;; Ref: http://www.02.246.ne.jp/~torutk/cxx/emacs/mode_extension.html
-;; Ref: http://d.hatena.ne.jp/higepon/20080731/1217491155
-;; ---
-(require 'autoinsert)
-;; テンプレート格納用ディレクトリ
-(setq auto-insert-directory "~/.emacs.d/insert/")
-;; ファイル拡張子とテンプレートの対応
-(setq auto-insert-alist
-      (append '(
-               ("\\.cpp$" . ["template.cpp" my-template])
-               ("\\.h$" . ["template.h" my-template])
-	       ("\\.py$" . ["template.py" my-template])
-	       ("\\.tex$" . ["template.tex" my-template])
-              ) auto-insert-alist))
-(add-hook 'find-file-hooks 'auto-insert)
-
-
-(require 'cl)
-
-(defvar template-replacements-alists
-  '(("%file%"             . (lambda () (file-name-nondirectory (buffer-file-name))))
-    ("%file-without-ext%" . (lambda () (file-name-sans-extension (file-name-nondirectory (buffer-file-name)))))
-    ("%include-guard%"    . (lambda () (format "__%s_H_INCLUDED__" (upcase (file-name-sans-extension (file-name-nondirectory buffer-file-name))))))))
-  
-
-(defun my-template ()
-  (time-stamp)
-  (mapc #'(lambda(c)
-            (progn
-              (goto-char (point-min))
-              (replace-string (car c) (funcall (cdr c)) nil)))
-        template-replacements-alists)
-  (goto-char (point-max))
-  (message "done."))
-
-(add-hook 'find-file-not-found-hooks 'auto-insert)
