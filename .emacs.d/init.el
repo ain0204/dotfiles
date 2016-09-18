@@ -25,32 +25,23 @@
 (el-get-bundle flycheck)
 (el-get-bundle redo+)
 (el-get-bundle highlight-symbol)
-;; 検索件数を表示
-(el-get-bundle anzu)
-;; undoやyankした後にどこが変わったかをハイライトする
-(el-get-bundle volatile-highlights)
-;; 行番号をいい感じに表示
-(el-get-bundle elpa:hlinum)
-
+(el-get-bundle anzu) ;; 検索件数を表示
+(el-get-bundle volatile-highlights) ;; undoやyankした後にどこが変わったかをハイライトする
+(el-get-bundle elpa:hlinum) ;; 行番号をいい感じに表示
 (el-get-bundle haskell-mode)
-;; color-themes
 (el-get-bundle atom-dark-theme)
 (el-get-bundle monokai-theme)
-
 (el-get-bundle init-loader)
 (el-get-bundle yasnippet)
 (el-get-bundle color-moccur)
 (el-get-bundle moccur-edit)
-
 (el-get-bundle elscreen)
-
-;; 括弧入力後に自動的に括弧内にカーソル移動
-(el-get-bundle cursor-in-brackets)
-
-;;(el-get-bundle drill-instructor)
+(el-get-bundle cursor-in-brackets) ;; 括弧入力後に自動的に括弧内にカーソル移動
+;; (el-get-bundle drill-instructor)
 ;; (el-get-bundle helm-c-moccur)
 ;; (el-get-bundle wget)
 ;; (el-get-bundle )
+
 
 ;; ---
 ;;
@@ -61,10 +52,10 @@
 (init-loader-load "~/.emacs.d/inits/")
 
 
-;;---------------------------------------
+;; ---
 ;;
 ;; 基本的な表示・装飾に関して
-;;---------------------------------------
+;; ---
 ;; モードラインの表示設定
 ;; 行番号 / カラム番号の表示
 (line-number-mode t)
@@ -136,40 +127,6 @@
       (message "alpha-on"))))
 
 (define-key global-map (kbd "C-c C-a") 'alpha-toggle)
-
-
-;; ---
-;;
-;; popwin
-;; 設定途中 C-x C-jに適用したい
-;; ---
-(require 'popwin)
-(popwin-mode 1)
-
-
-;; ---
-;;
-;; jebi
-;; sudo pacman -S python-virtualenv
-;; M-x jedi:install-server
-;; ---
-(add-hook 'python-mode-hook 'jedi:setup)
-(setq jedi:complete-on-dot t)
-
-
-;; ---
-;;
-;; flycheck
-;; ---
-(add-hook 'after-init-hook #'global-flycheck-mode)
-
-
-;; ---
-;;
-;; volatile-highlights
-;; ---
-(require 'volatile-highlights)
-(volatile-highlights-mode t)
 
 
 ;; ---
