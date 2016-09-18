@@ -31,15 +31,26 @@
 (el-get-bundle volatile-highlights)
 ;; 行番号をいい感じに表示
 (el-get-bundle elpa:hlinum)
-(el-get-bundle smartparens)
 
 (el-get-bundle haskell-mode)
-;;(el-get-bundle drill-instructor)
 ;; color-themes
 (el-get-bundle atom-dark-theme)
 (el-get-bundle monokai-theme)
+
 (el-get-bundle init-loader)
-;;(el-get-bundle )
+(el-get-bundle yasnippet)
+(el-get-bundle color-moccur)
+(el-get-bundle moccur-edit)
+
+(el-get-bundle elscreen)
+
+;; 括弧入力後に自動的に括弧内にカーソル移動
+(el-get-bundle cursor-in-brackets)
+
+;;(el-get-bundle drill-instructor)
+;; (el-get-bundle helm-c-moccur)
+;; (el-get-bundle wget)
+;; (el-get-bundle )
 
 ;; ---
 ;;
@@ -75,6 +86,18 @@
 (setq initial-scratch-message
       ";; Godspeed you!")
 
+;; Color
+(load-theme 'monokai t)
+
+;; 対応する括弧をハイライト
+(show-paren-mode t)
+(setq show-paren-style 'mixed)
+
+
+;; ---
+;;
+;; util
+;; ---
 ;; backupファイルの保存先
 (add-to-list 'backup-directory-alist
              (cons (expand-file-name "~/") (expand-file-name "~/.emacs.d/.trash/")))
@@ -82,18 +105,12 @@
 ;; 変更のあったファイルの自動再読み込み
 (global-auto-revert-mode 1)
 
-;; emacs クリップボード
-(setq x-select-enable-clipboard t)
-
 ;; 警告音を消す
 (setq ring-bell-function 'ignore)
 
-;; Color
-(load-theme 'monokai t)
+;; emacs クリップボード
+(setq x-select-enable-clipboard t)
 
-;; 対応する括弧をハイライト
-(show-paren-mode t)
-(setq show-paren-style 'mixed)
 
 ;; ---
 ;; 
@@ -119,58 +136,6 @@
       (message "alpha-on"))))
 
 (define-key global-map (kbd "C-c C-a") 'alpha-toggle)
-
-
-;; ---
-;;
-;; 文字コードの設定 1
-;; !!caution!! mozcより後だとmozcが死ぬ
-;; ---
-(set-language-environment "Japanese")
-
-
-;; ---
-;;
-;; mozc
-;; ---
-(require 'mozc)
-
-;;(set-language-environment "Japanese")
-(setq default-input-method "japanese-mozc")
-;; ミニバッファに表示する
-(setq mozc-candidate-style 'echo-area)
-
-;; Change cursor color depending on IBus status
-(setq ibus-cursor-color '("limegreen" "red" "red"))
-
-(global-set-key (kbd "<zenkaku-hankaku>") 'toggle-input-method)
-
-(add-hook 'mozc-mode-hook
-(lambda()
-  (define-key mozc-mode-map (kbd "<zenkaku-hankaku>") 'toggle-input-method)))
-
-;; mozc on/off で色を変える
-(add-hook 'input-method-activate-hook
-          (lambda() (set-cursor-color "dark orange")))
-(add-hook 'input-method-inactivate-hook
-          (lambda() (set-cursor-color "white smoke")))
-
-
-;; ---
-;;
-;; 文字コードの設定 2
-;; !!caution!! mozcに上書きされちゃうのでmozcより後で
-;; ---
-(prefer-coding-system 'utf-8)
-
-
-;; ---
-;;
-;; nyan-mode
-;; ---
-(require 'nyan-mode)
-(nyan-mode)
-(nyan-start-animation) ;; 動くぞ！ 
 
 
 ;; ---
@@ -201,31 +166,6 @@
 
 ;; ---
 ;;
-;; redo+
-;; ---
-(when (require 'redo+ nil t)
-  (global-set-key (kbd "C-.") 'redo))
-
-
-;; ---
-;;
-;; highlight-symbol
-;; ---
-(require 'highlight-symbol)
-;; 1秒後自動ハイライトされるようになる
-(setq highlight-symbol-idle-delay 1.0)
-;; 自動ハイライトをしたいならば
-(add-hook 'prog-mode-hook 'highlight-symbol-mode)
-;; ソースコードにおいてM-p/M-nでシンボル間を移動
-(add-hook 'prog-mode-hook 'highlight-symbol-nav-mode)
-;; 色をつける（global-hl-line-modeとの兼ね合いで変になるけど...）
-(global-set-key [(control f3)] 'highlight-symbol)
-;; シンボル置換
-(global-set-key [(meta f3)] 'highlight-symbol-query-replace)
-
-
-;; ---
-;;
 ;; volatile-highlights
 ;; ---
 (require 'volatile-highlights)
@@ -233,19 +173,20 @@
 
 
 ;; ---
-;;
-;; 括弧補完
+;; 
+;; ysnippet
+;; 試用中
 ;; ---
-(require 'smartparens-config)
-(smartparens-global-mode t)
+(require 'yasnippet)
 
-
-;; ---
-;;
-;; C++ まわりの設定
-;; ---
-;;
-;;ヘッダファイル(.h)をc++モードで開く
-(setq auto-mode-alist
-      (append '(("\\.h$" . c++-mode))
-              auto-mode-alist))
+(setq yas-snippet-dirs
+      '("~/.emacs.d/yasnippets"))
+ 
+;; 既存スニペットを挿入する
+(define-key yas-minor-mode-map (kbd "C-x i i") 'yas-insert-snippet)
+;; 新規スニペットを作成するバッファを用意する
+(define-key yas-minor-mode-map (kbd "C-x i n") 'yas-new-snippet)
+;; 既存スニペットを閲覧・編集する
+(define-key yas-minor-mode-map (kbd "C-x i v") 'yas-visit-snippet-file)
+ 
+(yas-global-mode 1)

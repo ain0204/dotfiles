@@ -10,5 +10,3 @@
 (global-set-key (kbd "C-c y") 'helm-show-kill-ring)
 (global-set-key (kbd "C-x b") 'helm-buffers-list)
 (global-set-key (kbd "C-x C-f") 'helm-find-files)
-;; "C-h"にbackspaceを割り当てる
-(define-key key-translation-map (kbd "C-h") (kbd "<DEL>"))
