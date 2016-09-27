@@ -2,6 +2,13 @@
 ;;
 ;; El-Get
 ;;---------------------------------------
+
+;; Added by Package.el.  This must come before configurations of
+;; installed packages.  Don't delete this line.  If you don't want it,
+;; just comment it out by adding a semicolon to the start of the line.
+;; You may delete these explanatory comments.
+(package-initialize)
+
 (when load-file-name
   (setq user-emacs-directory (file-name-directory load-file-name)))
 
@@ -37,6 +44,8 @@
 (el-get-bundle moccur-edit)
 (el-get-bundle elscreen)
 (el-get-bundle cursor-in-brackets) ;; 括弧入力後に自動的に括弧内にカーソル移動
+(el-get-bundle buffer-move) ;; bufferの移動(配置の交換)
+(el-get-bundle multiple-cursors)
 ;; (el-get-bundle drill-instructor)
 ;; (el-get-bundle helm-c-moccur)
 ;; (el-get-bundle wget)
@@ -79,6 +88,14 @@
 
 ;; Color
 (load-theme 'monokai t)
+;; コメントの色が気に入らないので変更
+(set-face-foreground 'font-lock-comment-delimiter-face "YellowGreen")
+(set-face-foreground 'font-lock-comment-face "YellowGreen")
+;; Regionの色
+;; (set-face-foreground 'region "white")
+;; (set-face-background 'region "dimgray")
+(set-face-foreground 'region "white")
+(set-face-background 'region "honeydew4")
 
 ;; 対応する括弧をハイライト
 (show-paren-mode t)
@@ -109,20 +126,15 @@
 ;; ---
 (setq alpha-on-flag nil)
 (set-frame-parameter nil 'alpha 100)
-
 (defun alpha-toggle()
   (interactive)
   (if (equal alpha-on-flag t)
       (progn
-	(load-theme 'monokai t)
 	(set-frame-parameter nil 'alpha 100)
 	(setq alpha-on-flag nil)
 	(message "alpha-off"))
     (progn
       (set-frame-parameter nil 'alpha 80)
-      (set-background-color "Black")
-      (set-foreground-color "LightGray")
-      (set-cursor-color "Gray")
       (setq alpha-on-flag t)
       (message "alpha-on"))))
 
@@ -147,3 +159,24 @@
 (define-key yas-minor-mode-map (kbd "C-x i v") 'yas-visit-snippet-file)
  
 (yas-global-mode 1)
+
+;;
+;; buffer-move
+;; 
+(global-set-key (kbd "M-g h") 'buf-move-left)
+(global-set-key (kbd "M-g j") 'buf-move-down)
+(global-set-key (kbd "M-g k") 'buf-move-up)
+(global-set-key (kbd "M-g l") 'buf-move-right)
+
+
+;;
+;; カーソル分身
+;; https://github.com/magnars/multiple-cursors.el
+;;
+(require 'multiple-cursors)
+;; 指定リージョン全てで分身
+(global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
+;; 指定中のワードで分身
+(global-set-key (kbd "C->") 'mc/mark-next-like-this)
+(global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+(global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
