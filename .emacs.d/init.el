@@ -46,6 +46,7 @@
 (el-get-bundle cursor-in-brackets) ;; 括弧入力後に自動的に括弧内にカーソル移動
 (el-get-bundle buffer-move) ;; bufferの移動(配置の交換)
 (el-get-bundle multiple-cursors)
+(el-get-bundle markdown-mode)
 ;; (el-get-bundle drill-instructor)
 ;; (el-get-bundle helm-c-moccur)
 ;; (el-get-bundle wget)
