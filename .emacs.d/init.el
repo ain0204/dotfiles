@@ -170,10 +170,12 @@
 (global-set-key (kbd "M-g l") 'buf-move-right)
 
 
-;;
+;; ---
+;; 
+;; multiple-cursors
 ;; カーソル分身
 ;; https://github.com/magnars/multiple-cursors.el
-;;
+;; ---
 (require 'multiple-cursors)
 ;; 指定リージョン全てで分身
 (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
