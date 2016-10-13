@@ -8,7 +8,9 @@
 	ls = log --decorate --oneline --stat
 	lg = log --decorate --oneline --graph
 	co = checkout
+	cob = checkout -b
 	ci = commit
 	st = status
 	d  = status 
 	br = branch
+	
