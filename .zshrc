@@ -85,3 +85,8 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
 alias emacs="emacs -nw"
+
+#
+# get gitignore function
+#
+function gi() { curl -L -s https://www.gitignore.io/api/$@ ;}
