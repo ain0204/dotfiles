@@ -11,3 +11,4 @@ el-get/
 elpa/
 kkcrc
 url/
+.mc-lists.el
