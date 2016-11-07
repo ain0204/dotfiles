@@ -2,7 +2,6 @@
 ;;
 ;; El-Get
 ;;---------------------------------------
-
 ;; Added by Package.el.  This must come before configurations of
 ;; installed packages.  Don't delete this line.  If you don't want it,
 ;; just comment it out by adding a semicolon to the start of the line.
@@ -44,9 +43,14 @@
 (el-get-bundle moccur-edit)
 (el-get-bundle elscreen)
 (el-get-bundle cursor-in-brackets) ;; 括弧入力後に自動的に括弧内にカーソル移動
-(el-get-bundle buffer-move) ;; bufferの移動(配置の交換)
+(el-get-bundle buffer-move)        ;; bufferの移動(配置の交換)
 (el-get-bundle multiple-cursors)
 (el-get-bundle markdown-mode)
+(el-get-bundle git-gutter+)
+(el-get-bundle git-gutter-fringe+)
+(el-get-bundle elpa:howm)
+(el-get-bundle matlab-mode)
+(el-get-bundle tramp)
 ;; (el-get-bundle drill-instructor)
 ;; (el-get-bundle helm-c-moccur)
 ;; (el-get-bundle wget)
@@ -161,9 +165,12 @@
  
 (yas-global-mode 1)
 
+
+;; ---
 ;;
 ;; buffer-move
-;; 
+;; 配置の交換
+;; --
 (global-set-key (kbd "M-g h") 'buf-move-left)
 (global-set-key (kbd "M-g j") 'buf-move-down)
 (global-set-key (kbd "M-g k") 'buf-move-up)
@@ -172,14 +179,39 @@
 
 ;; ---
 ;; 
-;; multiple-cursors
-;; カーソル分身
-;; https://github.com/magnars/multiple-cursors.el
+;; emacs client
 ;; ---
-(require 'multiple-cursors)
-;; 指定リージョン全てで分身
-(global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
-;; 指定中のワードで分身
-(global-set-key (kbd "C->") 'mc/mark-next-like-this)
-(global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
-(global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
+;; server start for emacs-client
+(require 'server)
+(unless (server-running-p)
+  (server-start))
+
+
+;; ---
+;;
+;; git-gutter+
+;; ---
+;; (require 'git-gutter+)
+;; (global-git-gutter+-mode t)
+
+;;(require 'git-gutter-fringe+)
+;; Optional: Activate minimal skin
+;;(git-gutter-fr+-minimal)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(anzu-deactivate-region t)
+ '(anzu-mode-lighter "")
+ '(anzu-search-threshold 1000)
+ '(custom-safe-themes
+   (quote
+    ("fe230d2861a13bb969b5cdf45df1396385250cc0b7933b8ab9a2f9339b455f5c" "03ea866815fe82c4736611acafef3c90519d15cd3d465d8f146ebfa3a293b663" default)))
+ '(package-selected-packages (quote (howm wget mozc-im let-alist hlinum))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(linum-highlight-face ((t (:foreground "black" :background "#888888")))))
