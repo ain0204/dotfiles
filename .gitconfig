@@ -1,6 +1,8 @@
 [user]
 	name = ain
 	email = ain@dummy.com
+[core]
+	editor = emacsclient -t
 [color]
 	ui = true
 [alias]
@@ -13,4 +15,5 @@
 	st = status
 	d  = status 
 	br = branch
-	
+	rmbr = branch -d
+	mkbr = branch
