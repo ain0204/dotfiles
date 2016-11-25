@@ -75,7 +75,7 @@
 (line-number-mode t)
 (column-number-mode t)
 
-;; タイトルバーにファイルのフルパスを表示 
+;; タイトルバーにファイルのフルパスを表示
 (setq frame-title-format "emacs : %f")
 
 ;; スタートアップ非表示
@@ -124,9 +124,12 @@
 ;; emacs クリップボード
 (setq x-select-enable-clipboard t)
 
+;; 保存時に行末空白行は削除
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+
 
 ;; ---
-;; 
+;;
 ;; 背景透過を切り替える関数
 ;; ---
 (setq alpha-on-flag nil)
@@ -147,7 +150,7 @@
 
 
 ;; ---
-;; 
+;;
 ;; ysnippet
 ;; 試用中
 ;; ---
@@ -155,14 +158,14 @@
 
 (setq yas-snippet-dirs
       '("~/.emacs.d/yasnippets"))
- 
+
 ;; 既存スニペットを挿入する
 (define-key yas-minor-mode-map (kbd "C-x i i") 'yas-insert-snippet)
 ;; 新規スニペットを作成するバッファを用意する
 (define-key yas-minor-mode-map (kbd "C-x i n") 'yas-new-snippet)
 ;; 既存スニペットを閲覧・編集する
 (define-key yas-minor-mode-map (kbd "C-x i v") 'yas-visit-snippet-file)
- 
+
 (yas-global-mode 1)
 
 
@@ -178,7 +181,7 @@
 
 
 ;; ---
-;; 
+;;
 ;; emacs client
 ;; ---
 ;; server start for emacs-client
