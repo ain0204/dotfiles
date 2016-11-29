@@ -17,3 +17,4 @@
 	br = branch
 	rmbr = branch -d
 	mkbr = branch
+	hist = log --graph --all --color --pretty=format:\" %C(yellow)%h%Creset %C(green)%an%Creset%x09%s %Cred%d%Creset\"
