@@ -91,16 +91,6 @@
 (setq initial-scratch-message
       ";; Godspeed you!")
 
-;; Color
-(load-theme 'monokai t)
-;; コメントの色が気に入らないので変更
-(set-face-foreground 'font-lock-comment-delimiter-face "YellowGreen")
-(set-face-foreground 'font-lock-comment-face "YellowGreen")
-;; Regionの色
-;; (set-face-foreground 'region "white")
-;; (set-face-background 'region "dimgray")
-(set-face-foreground 'region "white")
-(set-face-background 'region "honeydew4")
 
 ;; 対応する括弧をハイライト
 (show-paren-mode t)
