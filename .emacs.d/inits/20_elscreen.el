@@ -18,4 +18,4 @@
 ;;       (setq elscreen-display-tab t)
 ;;       (setq elscreen-display-tab-flag t))))
 ;; (define-key global-map (kbd "C-z t") 'elscreen-display-tab-toggle)
-(define-key global-map (kbd "C-z C-z") 'helm-elscreen)
+;; (define-key global-map (kbd "C-z C-z") 'helm-elscreen)

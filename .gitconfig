@@ -13,8 +13,10 @@
 	cob = checkout -b
 	ci = commit
 	st = status
-	d  = status 
+	d  = status
 	br = branch
 	rmbr = branch -d
 	mkbr = branch
 	hist = log --graph --all --color --pretty=format:\" %C(yellow)%h%Creset %C(green)%an%Creset%x09%s %Cred%d%Creset\"
+	unadd = reset HEAD --
+	unstage = reset HEAD --

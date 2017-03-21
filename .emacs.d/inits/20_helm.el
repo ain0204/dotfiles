@@ -10,3 +10,7 @@
 (global-set-key (kbd "C-c y") 'helm-show-kill-ring)
 (global-set-key (kbd "C-x b") 'helm-buffers-list)
 (global-set-key (kbd "C-x C-f") 'helm-find-files)
+
+(setq helm-idle-delay 0.2)
+(setq helm-input-idle-delay 0.2)
+(setq helm-candidate-number-limit 100)

@@ -46,8 +46,8 @@
 (el-get-bundle buffer-move)        ;; bufferの移動(配置の交換)
 (el-get-bundle multiple-cursors)
 (el-get-bundle markdown-mode)
-(el-get-bundle git-gutter+)
-(el-get-bundle git-gutter-fringe+)
+(el-get-bundle git-gutter)
+(el-get-bundle git-gutter-fringe)
 (el-get-bundle elpa:howm)
 (el-get-bundle matlab-mode)
 (el-get-bundle tramp)
@@ -182,29 +182,31 @@
 
 ;; ---
 ;;
-;; git-gutter+
+;; git-gutter
 ;; ---
-;; (require 'git-gutter+)
-;; (global-git-gutter+-mode t)
+(require 'git-gutter)
 
-;;(require 'git-gutter-fringe+)
-;; Optional: Activate minimal skin
-;;(git-gutter-fr+-minimal)
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(anzu-deactivate-region t)
- '(anzu-mode-lighter "")
- '(anzu-search-threshold 1000)
- '(custom-safe-themes
-   (quote
-    ("fe230d2861a13bb969b5cdf45df1396385250cc0b7933b8ab9a2f9339b455f5c" "03ea866815fe82c4736611acafef3c90519d15cd3d465d8f146ebfa3a293b663" default)))
- '(package-selected-packages (quote (howm wget mozc-im let-alist hlinum))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(linum-highlight-face ((t (:foreground "black" :background "#888888")))))
+;; If you enable global minor mode
+(global-git-gutter-mode t)
+
+;; If you would like to use git-gutter.el and linum-mode
+(git-gutter:linum-setup)
+
+;; If you enable git-gutter-mode for some modes
+(add-hook 'ruby-mode-hook 'git-gutter-mode)
+
+(global-set-key (kbd "C-x C-g") 'git-gutter)
+(global-set-key (kbd "C-x v =") 'git-gutter:popup-hunk)
+
+;; Jump to next/previous hunk
+(global-set-key (kbd "C-x p") 'git-gutter:previous-hunk)
+(global-set-key (kbd "C-x n") 'git-gutter:next-hunk)
+
+;; Stage current hunk
+(global-set-key (kbd "C-x v s") 'git-gutter:stage-hunk)
+
+;; Revert current hunk
+(global-set-key (kbd "C-x v r") 'git-gutter:revert-hunk)
+
+;; Mark current hunk
+(global-set-key (kbd "C-x v SPC") #'git-gutter:mark-hunk)

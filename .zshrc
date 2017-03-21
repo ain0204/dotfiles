@@ -57,7 +57,10 @@ plugins=(git)
 # export PATH="/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
 # export MANPATH="/usr/local/man:$MANPATH"
 
-source $ZSH/oh-my-zsh.sh
+# for emacs tramp
+# source $ZSH/oh-my-zsh.sh
+[[ "$TERM" != "dumb" ]] && source $ZSH/oh-my-zsh.sh
+
 
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
@@ -84,9 +87,21 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-alias emacs="emacs -nw"
+alias pemacs="emacs"
+alias emacs="~/myemacs.sh"
+# alias emacs="emacsclient -c -n -a """
+alias sl="ls"
+alias suspend="systemctl suspend"
 
 #
 # get gitignore function
 #
 function gi() { curl -L -s https://www.gitignore.io/api/$@ ;}
+
+#
+# ruby用
+#
+# export PATH=$HOME/.rbenv/bin:$PATH
+# eval "$(rbenv init -)"
+
+# export PATH="$PATH:/home/ain/.gem/ruby/2.2.3/bin"
